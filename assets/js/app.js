@@ -1,51 +1,28 @@
-const max = 731;
+const imgEl = document.querySelector('.char-img');
+const nameEl = document.querySelector('.name');
 
-function getRandomInt(max) {
-  return Math.floor(Math.random() * Math.floor(max));
-}
+const pubK = 'c1dedefd4d84b0f6d13c9917c21e68a7';
+const privK = '7dffdaeb4e97823cd9c365b74ced839f09816b2b';
+const time = new Date().getTime();
+// console.log('time: ' + time);
+const md5hash = md5(time + privK + pubK);
+// console.log('hash: ' + md5hash);
 
-function getHeroes() {
+// fetching api for random characters name and image
+function getRandomChar() {
   fetch(
-    `https://superheroapi.com/api/10157469717981058/${getRandomInt(max)}`
+    `https://gateway.marvel.com/v1/public/characters/${randomId}?&limit=100&ts=${time}&apikey=${pubK}&hash=${md5hash}`
   ).then(function (response) {
     return response.json().then(function (data) {
-      console.log(data);
-      const publisher = data.biography.publisher;
-      const img = data.image.url;
-      const name = data.name;
-      const alias = data.biography.aliases;
-      const alignment = data.biography.alignment;
-      const affiliation = data.connections['group-affiliation'];
-      const relatives = data.connections.relatives;
-      const race = data.appearance.race;
-      const job = data.work.occupation;
-      const location = data.work.base;
-      const combat = data.powerstats.combat;
-      const durability = data.powerstats.durability;
-      const intel = data.powerstats.intelligence;
-      const power = data.powerstats.power;
-      const speed = data.powerstats.speed;
-      const strength = data.powerstats.strength;
+      const charImg =
+        data.data.results[0].thumbnail.path + '/portrait_uncanny.jpg';
+      // console.log(charImg);
+      const charName = data.data.results[0].name;
+      // console.log(charName);
 
-      console.log('publisher: ' + publisher);
-      console.log('image: ' + img);
-      console.log('name: ' + name);
-      console.log('alias: ' + alias);
-      console.log('alignment: ' + alignment);
-      console.log('affiliation: ' + affiliation);
-      console.log('relatives: ' + relatives);
-      console.log('race: ' + race);
-      console.log('job: ' + job);
-      console.log('location: ' + location);
-      console.log('STATS');
-      console.log('combat: ' + combat);
-      console.log('durability: ' + durability);
-      console.log('intel: ' + intel);
-      console.log('power: ' + power);
-      console.log('speed: ' + speed);
-      console.log('strength: ' + strength);
+      imgEl.src = charImg;
+      nameEl.textContent = charName;
     });
   });
 }
-
-getHeroes();
+getRandomChar();
